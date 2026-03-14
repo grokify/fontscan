@@ -7,6 +7,7 @@
 [![Docs][docs-godoc-svg]][docs-godoc-url]
 [![Visualization][viz-svg]][viz-url]
 [![License][license-svg]][license-url]
+
  [go-ci-svg]: https://github.com/grokify/fontscan/actions/workflows/go-ci.yaml/badge.svg?branch=main
  [go-ci-url]: https://github.com/grokify/fontscan/actions/workflows/go-ci.yaml
  [go-lint-svg]: https://github.com/grokify/fontscan/actions/workflows/go-lint.yaml/badge.svg?branch=main
