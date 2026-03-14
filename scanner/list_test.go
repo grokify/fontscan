@@ -104,3 +104,111 @@ func TestListOptions(t *testing.T) {
 		t.Errorf("ListOptions.Limit = %d, expected %d", opts.Limit, 10)
 	}
 }
+
+func TestScanner_List(t *testing.T) {
+	// Test with system fonts (integration test)
+	s := NewScanner()
+
+	t.Run("no options", func(t *testing.T) {
+		result, err := s.List(ListOptions{})
+		if err != nil {
+			t.Fatalf("List() error = %v", err)
+		}
+		if result == nil {
+			t.Fatal("List() returned nil")
+		}
+		// Should have entries, not families
+		if len(result.Families) > 0 {
+			t.Error("Expected no families when FamilyOnly is false")
+		}
+	})
+
+	t.Run("family only", func(t *testing.T) {
+		result, err := s.List(ListOptions{FamilyOnly: true})
+		if err != nil {
+			t.Fatalf("List() error = %v", err)
+		}
+		if result == nil {
+			t.Fatal("List() returned nil")
+		}
+		// Should have families, not entries
+		if len(result.Entries) > 0 {
+			t.Error("Expected no entries when FamilyOnly is true")
+		}
+	})
+
+	t.Run("with limit", func(t *testing.T) {
+		result, err := s.List(ListOptions{Limit: 5})
+		if err != nil {
+			t.Fatalf("List() error = %v", err)
+		}
+		if len(result.Entries) > 5 {
+			t.Errorf("List() returned %d entries, expected <= 5", len(result.Entries))
+		}
+	})
+
+	t.Run("family only with limit", func(t *testing.T) {
+		result, err := s.List(ListOptions{FamilyOnly: true, Limit: 3})
+		if err != nil {
+			t.Fatalf("List() error = %v", err)
+		}
+		if len(result.Families) > 3 {
+			t.Errorf("List() returned %d families, expected <= 3", len(result.Families))
+		}
+	})
+
+	t.Run("with filter", func(t *testing.T) {
+		result, err := s.List(ListOptions{Filter: "arial", FamilyOnly: true})
+		if err != nil {
+			t.Fatalf("List() error = %v", err)
+		}
+		// All results should match the filter
+		for _, family := range result.Families {
+			if !containsIgnoreCase(family, "arial") {
+				t.Errorf("Family %q does not match filter 'arial'", family)
+			}
+		}
+	})
+
+	t.Run("invalid filter regex", func(t *testing.T) {
+		_, err := s.List(ListOptions{Filter: "[invalid"})
+		if err == nil {
+			t.Error("Expected error for invalid regex")
+		}
+	})
+}
+
+func containsIgnoreCase(s, substr string) bool {
+	return len(s) >= len(substr) &&
+		(s == substr ||
+			len(substr) == 0 ||
+			(len(s) > 0 && containsIgnoreCaseHelper(s, substr)))
+}
+
+func containsIgnoreCaseHelper(s, substr string) bool {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if equalIgnoreCase(s[i:i+len(substr)], substr) {
+			return true
+		}
+	}
+	return false
+}
+
+func equalIgnoreCase(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		ca, cb := a[i], b[i]
+		if ca >= 'A' && ca <= 'Z' {
+			ca += 'a' - 'A'
+		}
+		if cb >= 'A' && cb <= 'Z' {
+			cb += 'a' - 'A'
+		}
+		if ca != cb {
+			return false
+		}
+	}
+	return true
+}

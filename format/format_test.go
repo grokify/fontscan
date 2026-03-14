@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/grokify/fontscan/checker"
+	"github.com/grokify/fontscan/scanner"
 )
 
 func TestParseFormat(t *testing.T) {
@@ -229,5 +230,175 @@ func TestWriteFontList_JSON(t *testing.T) {
 
 	if len(parsed) != 1 {
 		t.Errorf("Expected 1 font, got %d", len(parsed))
+	}
+}
+
+func TestWriteFamilyList_TOON(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatTOON)
+
+	families := []string{"Arial", "Helvetica", "Times New Roman"}
+
+	if err := f.WriteFamilyList(families); err != nil {
+		t.Fatalf("WriteFamilyList failed: %v", err)
+	}
+
+	output := buf.String()
+
+	if !strings.Contains(output, "count: 3") {
+		t.Error("Output missing count")
+	}
+
+	if !strings.Contains(output, "families:") {
+		t.Error("Output missing families header")
+	}
+
+	for _, family := range families {
+		if !strings.Contains(output, family) {
+			t.Errorf("Output missing family %q", family)
+		}
+	}
+}
+
+func TestWriteFamilyList_JSON(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatJSON)
+
+	families := []string{"Arial", "Helvetica"}
+
+	if err := f.WriteFamilyList(families); err != nil {
+		t.Fatalf("WriteFamilyList failed: %v", err)
+	}
+
+	var parsed []string
+	if err := json.Unmarshal(buf.Bytes(), &parsed); err != nil {
+		t.Fatalf("Output is not valid JSON: %v", err)
+	}
+
+	if len(parsed) != 2 {
+		t.Errorf("Expected 2 families, got %d", len(parsed))
+	}
+}
+
+func TestWriteListResult_WithEntries(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatTOON)
+
+	result := &scanner.ListResult{
+		Entries: []scanner.FontEntry{
+			{Name: "Font A", Path: "/path/a.ttf", Family: "FontA", Style: "Regular"},
+			{Name: "Font B", Path: "/path/b.ttf", Family: "FontB", Style: "Bold"},
+		},
+	}
+
+	if err := f.WriteListResult(result); err != nil {
+		t.Fatalf("WriteListResult failed: %v", err)
+	}
+
+	output := buf.String()
+
+	if !strings.Contains(output, "count: 2") {
+		t.Error("Output missing count")
+	}
+
+	if !strings.Contains(output, "Font A") {
+		t.Error("Output missing Font A")
+	}
+}
+
+func TestWriteListResult_WithFamilies(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatTOON)
+
+	result := &scanner.ListResult{
+		Families: []string{"Arial", "Helvetica"},
+	}
+
+	if err := f.WriteListResult(result); err != nil {
+		t.Fatalf("WriteListResult failed: %v", err)
+	}
+
+	output := buf.String()
+
+	if !strings.Contains(output, "count: 2") {
+		t.Error("Output missing count")
+	}
+
+	if !strings.Contains(output, "families:") {
+		t.Error("Output missing families header")
+	}
+}
+
+func TestWritePandocResult_TOON(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatTOON)
+
+	result := &PandocCheckResult{
+		File: "test.md",
+		FontSettings: map[string]string{
+			"mainfont": "Arial",
+			"monofont": "Menlo",
+		},
+		Results: map[string]*checker.CheckResult{
+			"mainfont": {
+				Font:         "Arial",
+				Supported:    true,
+				MissingCount: 0,
+			},
+		},
+		Warnings: []string{"warning 1"},
+		Errors:   []string{"error 1"},
+	}
+
+	if err := f.WritePandocResult(result); err != nil {
+		t.Fatalf("WritePandocResult failed: %v", err)
+	}
+
+	output := buf.String()
+
+	expectedStrings := []string{
+		"file: test.md",
+		"fontSettings:",
+		"mainfont: Arial",
+		"warnings:",
+		"warning 1",
+		"errors:",
+		"error 1",
+		"results:",
+	}
+
+	for _, s := range expectedStrings {
+		if !strings.Contains(output, s) {
+			t.Errorf("Output missing %q", s)
+		}
+	}
+}
+
+func TestWritePandocResult_JSON(t *testing.T) {
+	var buf bytes.Buffer
+	f := NewFormatter(&buf, FormatJSON)
+
+	result := &PandocCheckResult{
+		File: "test.md",
+		FontSettings: map[string]string{
+			"mainfont": "Arial",
+		},
+	}
+
+	if err := f.WritePandocResult(result); err != nil {
+		t.Fatalf("WritePandocResult failed: %v", err)
+	}
+
+	var parsed PandocCheckResult
+	if err := json.Unmarshal(buf.Bytes(), &parsed); err != nil {
+		t.Fatalf("Output is not valid JSON: %v", err)
+	}
+
+	if parsed.File != "test.md" {
+		t.Errorf("File = %q, want %q", parsed.File, "test.md")
+	}
+
+	if parsed.FontSettings["mainfont"] != "Arial" {
+		t.Errorf("FontSettings[mainfont] = %q, want %q", parsed.FontSettings["mainfont"], "Arial")
 	}
 }
