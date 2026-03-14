@@ -9,6 +9,7 @@ import (
 
 	"github.com/grokify/fontscan/checker"
 	"github.com/grokify/fontscan/font"
+	"github.com/grokify/fontscan/scanner"
 )
 
 // Format specifies the output format.
@@ -284,6 +285,92 @@ func (f *Formatter) writeFamilyListTOON(families []string) error {
 
 	for _, family := range families {
 		fmt.Fprintf(&sb, "  - %s\n", family)
+	}
+
+	_, err := f.Writer.Write([]byte(sb.String()))
+	return err
+}
+
+// WriteListResult writes a scanner.ListResult in the configured format.
+func (f *Formatter) WriteListResult(r *scanner.ListResult) error {
+	if len(r.Families) > 0 {
+		return f.WriteFamilyList(r.Families)
+	}
+
+	// Convert scanner.FontEntry to FontListEntry
+	entries := make([]FontListEntry, len(r.Entries))
+	for i, e := range r.Entries {
+		entries[i] = FontListEntry{
+			Name:   e.Name,
+			Path:   e.Path,
+			Family: e.Family,
+			Style:  e.Style,
+		}
+	}
+	return f.WriteFontList(entries)
+}
+
+// PandocCheckResult mirrors pandoc.CheckResult to avoid import cycles.
+// Use this when formatting pandoc check results.
+type PandocCheckResult struct {
+	File         string                          `json:"file"`
+	FontSettings map[string]string               `json:"fontSettings,omitempty"`
+	Results      map[string]*checker.CheckResult `json:"results,omitempty"`
+	Warnings     []string                        `json:"warnings,omitempty"`
+	Errors       []string                        `json:"errors,omitempty"`
+}
+
+// WritePandocResult writes a PandocCheckResult in the configured format.
+func (f *Formatter) WritePandocResult(r *PandocCheckResult) error {
+	switch f.Format {
+	case FormatJSON, FormatJSONCompact:
+		return f.WriteJSON(r)
+	default:
+		return f.writePandocResultTOON(r)
+	}
+}
+
+func (f *Formatter) writePandocResultTOON(r *PandocCheckResult) error {
+	var sb strings.Builder
+
+	fmt.Fprintf(&sb, "file: %s\n", r.File)
+	sb.WriteString("fontSettings:\n")
+	for k, v := range r.FontSettings {
+		fmt.Fprintf(&sb, "  %s: %s\n", k, v)
+	}
+
+	if len(r.Warnings) > 0 {
+		sb.WriteString("warnings:\n")
+		for _, w := range r.Warnings {
+			fmt.Fprintf(&sb, "  - %s\n", w)
+		}
+	}
+
+	if len(r.Errors) > 0 {
+		sb.WriteString("errors:\n")
+		for _, e := range r.Errors {
+			fmt.Fprintf(&sb, "  - %s\n", e)
+		}
+	}
+
+	if len(r.Results) > 0 {
+		sb.WriteString("results:\n")
+		for varName, res := range r.Results {
+			fmt.Fprintf(&sb, "  %s:\n", varName)
+			fmt.Fprintf(&sb, "    font: %s\n", res.Font)
+			fmt.Fprintf(&sb, "    supported: %t\n", res.Supported)
+			fmt.Fprintf(&sb, "    missingCount: %d\n", res.MissingCount)
+			if len(res.Missing) > 0 {
+				sb.WriteString("    missing:\n")
+				for _, m := range res.Missing {
+					fmt.Fprintf(&sb, "      - char: %s\n", m.Char)
+					fmt.Fprintf(&sb, "        codepoint: %s\n", m.Codepoint)
+					if m.Name != "" {
+						fmt.Fprintf(&sb, "        name: %s\n", m.Name)
+					}
+				}
+			}
+		}
 	}
 
 	_, err := f.Writer.Write([]byte(sb.String()))
