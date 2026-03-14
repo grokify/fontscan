@@ -1,5 +1,5 @@
 # Binaries
-fontscan
+/fontscan
 *.exe
 *.exe~
 *.dll
