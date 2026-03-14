@@ -1,0 +1,39 @@
+{
+  "irVersion": "1.0",
+  "project": "fontscan",
+  "repository": "https://github.com/grokify/fontscan",
+  "versioning": "semver",
+  "commitConvention": "conventional",
+  "maintainers": ["grokify"],
+  "releases": [
+    {
+      "version": "v0.1.0",
+      "date": "2026-03-13",
+      "highlights": [
+        { "description": "Pure-Go font glyph coverage checker for Pandoc/LaTeX document validation" },
+        { "description": "Drop-in replacement for fc-list font discovery with structured output" }
+      ],
+      "added": [
+        { "description": "`fontscan check` command to verify font supports all characters in a document" },
+        { "description": "`fontscan list` command to list and filter available fonts with `--filter`, `--family-only`, and `--limit` flags" },
+        { "description": "`fontscan info` command to display font information with optional `--coverage` for Unicode block analysis" },
+        { "description": "`fontscan recommend` command to find fonts supporting all characters in a document" },
+        { "description": "`fontscan pandoc` command to parse YAML frontmatter and validate font settings" },
+        { "description": "`font` package for loading TTF, OTF, and TTC fonts with glyph coverage analysis" },
+        { "description": "`scanner` package for cross-platform font discovery (macOS, Linux, Windows)" },
+        { "description": "`checker` package for document-to-font compatibility validation" },
+        { "description": "`pandoc` package for Pandoc frontmatter parsing with default font database" },
+        { "description": "`format` package with TOON (default), JSON, and JSON-compact output formats" },
+        { "description": "Unicode character names in missing character reports (e.g., \"U+2192 RIGHTWARDS ARROW\")" },
+        { "description": "36 common Unicode block coverage analysis" },
+        { "description": "Flexible font name matching (case-insensitive, space-insensitive)" },
+        { "description": "Exit code 1 when missing characters found for CI/CD integration" }
+      ],
+      "documentation": [
+        { "description": "README with CLI usage examples and library API documentation" },
+        { "description": "CLAUDE.md with AI agent instructions and workflow guidance" },
+        { "description": "fc-list to fontscan migration guide in README" }
+      ]
+    }
+  ]
+}
