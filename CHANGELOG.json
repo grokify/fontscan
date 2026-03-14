@@ -7,6 +7,30 @@
   "maintainers": ["grokify"],
   "releases": [
     {
+      "version": "v0.2.0",
+      "date": "2026-03-14",
+      "highlights": [
+        { "description": "Library API for programmatic font listing and Pandoc document checking" }
+      ],
+      "added": [
+        { "description": "`scanner.List()` method with `ListOptions` for filtered font discovery", "commit": "d9485ca" },
+        { "description": "`scanner.ExtractUniqueFamilies()` for deduplicating font families", "commit": "d9485ca" },
+        { "description": "`pandoc.CheckDocument()` for programmatic frontmatter validation", "commit": "d9485ca" },
+        { "description": "`format.WriteListResult()` for formatting scanner results", "commit": "d9485ca" },
+        { "description": "`format.WritePandocResult()` for formatting pandoc check results", "commit": "d9485ca" }
+      ],
+      "changed": [
+        { "description": "CLI commands now delegate to library functions for better testability", "commit": "d9485ca" }
+      ],
+      "tests": [
+        { "description": "Unit tests for `scanner.ExtractUniqueFamilies()`", "commit": "d9485ca" },
+        { "description": "Unit tests for `pandoc.CheckDocument()`", "commit": "d9485ca" }
+      ],
+      "documentation": [
+        { "description": "Add Related Projects section to README", "commit": "c43fe6b" }
+      ]
+    },
+    {
       "version": "v0.1.0",
       "date": "2026-03-14",
       "highlights": [
