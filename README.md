@@ -1,4 +1,4 @@
-# fontscan
+# FontScan
 
 [![Go CI][go-ci-svg]][go-ci-url]
 [![Go Lint][go-lint-svg]][go-lint-url]
@@ -272,6 +272,10 @@ The `pandoc` command recognizes these standard font variables:
 
 - Some fonts use cmap encodings not supported by Go's `sfnt` library. When loading a TTC collection, fontscan iterates through fonts until one loads successfully.
 - Coverage analysis checks common Unicode blocks but not all possible code points.
+
+## Related Projects
+
+- [fontconfig](https://github.com/behdad/fontconfig): includes `fc-list`, `fc-scan`
 
 ## License
 
