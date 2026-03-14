@@ -31,10 +31,10 @@ A Go library and CLI for checking font glyph coverage to prevent Pandoc/LaTeX mi
 
 When generating PDFs with Pandoc and LaTeX, missing font glyphs result in errors or blank characters. `fontscan` helps you:
 
-- **Check document compliance** - Verify all characters in a document are supported by specified fonts
-- **Find missing characters** - Identify which characters are not supported by a font
-- **Recommend fonts** - Find installed fonts that support all characters in a document
-- **Parse Pandoc frontmatter** - Extract and check fonts specified in YAML frontmatter
+- ✅ **Check document compliance** - Verify all characters in a document are supported by specified fonts
+- 🔍 **Find missing characters** - Identify which characters are not supported by a font
+- 💡 **Recommend fonts** - Find installed fonts that support all characters in a document
+- 📄 **Parse Pandoc frontmatter** - Extract and check fonts specified in YAML frontmatter
 
 ## Installation
 
