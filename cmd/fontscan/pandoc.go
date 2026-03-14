@@ -47,11 +47,11 @@ func init() {
 
 // PandocResult holds the check results for a Pandoc document.
 type PandocResult struct {
-	File         string                    `json:"file"`
-	FontSettings map[string]string         `json:"fontSettings,omitempty"`
+	File         string                          `json:"file"`
+	FontSettings map[string]string               `json:"fontSettings,omitempty"`
 	Results      map[string]*checker.CheckResult `json:"results,omitempty"`
-	Warnings     []string                  `json:"warnings,omitempty"`
-	Errors       []string                  `json:"errors,omitempty"`
+	Warnings     []string                        `json:"warnings,omitempty"`
+	Errors       []string                        `json:"errors,omitempty"`
 }
 
 func runPandoc(cmd *cobra.Command, args []string) error {

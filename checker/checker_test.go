@@ -171,12 +171,12 @@ func TestIsSignificant(t *testing.T) {
 		{'0', true},
 		{'!', true},
 		{'→', true},
-		{' ', false},  // Space
-		{'\t', false}, // Tab
-		{'\n', false}, // Newline
-		{'\r', false}, // Carriage return
-		{0x00, false}, // Null
-		{0x1F, false}, // Unit separator (control char)
+		{' ', false},     // Space
+		{'\t', false},    // Tab
+		{'\n', false},    // Newline
+		{'\r', false},    // Carriage return
+		{0x00, false},    // Null
+		{0x1F, false},    // Unit separator (control char)
 		{'\u00A0', true}, // Non-breaking space (should be checked)
 	}
 

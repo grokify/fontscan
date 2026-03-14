@@ -6,10 +6,10 @@ import (
 
 func TestNewMissingChar(t *testing.T) {
 	tests := []struct {
-		r         rune
-		count     int
-		wantChar  string
-		wantCode  string
+		r        rune
+		count    int
+		wantChar string
+		wantCode string
 	}{
 		{'→', 5, "→", "U+2192"},
 		{'A', 1, "A", "U+0041"},

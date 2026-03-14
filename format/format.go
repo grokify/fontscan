@@ -73,12 +73,12 @@ func (f *Formatter) WriteRecommendResult(r *checker.RecommendResult) error {
 // WriteFontInfo writes font information in the configured format.
 func (f *Formatter) WriteFontInfo(fnt *font.Font, showCoverage bool) error {
 	info := struct {
-		Name      string                     `json:"name"`
-		Family    string                     `json:"family,omitempty"`
-		Style     string                     `json:"style,omitempty"`
-		Path      string                     `json:"path"`
-		NumGlyphs int                        `json:"numGlyphs"`
-		Coverage  []BlockCoverageInfo        `json:"coverage,omitempty"`
+		Name      string              `json:"name"`
+		Family    string              `json:"family,omitempty"`
+		Style     string              `json:"style,omitempty"`
+		Path      string              `json:"path"`
+		NumGlyphs int                 `json:"numGlyphs"`
+		Coverage  []BlockCoverageInfo `json:"coverage,omitempty"`
 	}{
 		Name:      fnt.Name,
 		Family:    fnt.Family,

@@ -40,11 +40,11 @@ func NewMissingChar(r rune, count int) MissingChar {
 
 // RecommendResult represents fonts recommended for a document.
 type RecommendResult struct {
-	File          string            `json:"file"`
-	TotalChars    int               `json:"totalChars"`
-	UniqueChars   int               `json:"uniqueChars"`
-	FullSupport   []FontMatch       `json:"fullSupport,omitempty"`
-	PartialSupport []PartialMatch   `json:"partialSupport,omitempty"`
+	File           string         `json:"file"`
+	TotalChars     int            `json:"totalChars"`
+	UniqueChars    int            `json:"uniqueChars"`
+	FullSupport    []FontMatch    `json:"fullSupport,omitempty"`
+	PartialSupport []PartialMatch `json:"partialSupport,omitempty"`
 }
 
 // FontMatch represents a font that fully supports a document.
